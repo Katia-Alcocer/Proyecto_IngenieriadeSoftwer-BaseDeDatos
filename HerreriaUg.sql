@@ -1,7 +1,7 @@
-CREATE DATABASE HerreriaUG;
+CREATE DATABASE ProyectoHerreriaUG;
 GO
 
-USE HerreriaUG;
+USE ProyectoHerreriaUG;
 GO
 
 -- Tablas
@@ -124,8 +124,8 @@ CREATE TABLE Productos (
     idProveedor INT NOT NULL,
     CHECK (PrecioVenta >= PrecioCompra),
     CHECK (Stock >= 0),
-    FOREIGN KEY (idCategoria) REFERENCES Categorias(idCategoria) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (idProveedor) REFERENCES Proveedores(idProveedor) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (idCategoria) REFERENCES Categorias(idCategoria)  ON UPDATE CASCADE,
+    FOREIGN KEY (idProveedor) REFERENCES Proveedores(idProveedor) ON UPDATE CASCADE
 );
 
 CREATE TABLE Ventas (
@@ -140,8 +140,8 @@ CREATE TABLE Ventas (
     Estatus VARCHAR(30) CHECK (Estatus IN ('Cancelada', 'Pagada', 'En Espera de Pago')) NOT NULL DEFAULT 'En Espera de Pago',
     idCliente INT NOT NULL,
     idEmpleado INT NOT NULL,
-    FOREIGN KEY (idCliente) REFERENCES Clientes(idCliente) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (idEmpleado) REFERENCES Empleados(idEmpleado) ON DELETE RESTRICT ON UPDATE CASCADE
+        FOREIGN KEY (idCliente) REFERENCES Clientes(idCliente),
+    FOREIGN KEY (idEmpleado) REFERENCES Empleados(idEmpleado) 
 );
 
 CREATE TABLE DetalleVenta (
@@ -154,8 +154,8 @@ CREATE TABLE DetalleVenta (
     idProducto INT NOT NULL,
     idDescuento INT,
     FOREIGN KEY (idVenta) REFERENCES Ventas(idVenta) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (idDescuento) REFERENCES Descuentos(idDescuento) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto) ON UPDATE CASCADE,
+    FOREIGN KEY (idDescuento) REFERENCES Descuentos(idDescuento)  ON UPDATE CASCADE
 );
 
 CREATE TABLE Temp_Ventas (
@@ -163,8 +163,8 @@ CREATE TABLE Temp_Ventas (
     idProducto INT NOT NULL,
     Cantidad INT NOT NULL CHECK (Cantidad > 0),
     PRIMARY KEY (idEmpleado, idProducto),
-    FOREIGN KEY (idEmpleado) REFERENCES Empleados(idEmpleado) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (idEmpleado) REFERENCES Empleados(idEmpleado)  ON UPDATE CASCADE,
+    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto) ON UPDATE CASCADE
 );
 
 CREATE TABLE HistorialModificaciones (
@@ -177,7 +177,7 @@ CREATE TABLE HistorialModificaciones (
     Fecha DATE NOT NULL DEFAULT CAST(GETDATE() AS DATE),
     Hora TIME NOT NULL DEFAULT CAST(GETDATE() AS TIME),
     idEmpleado INT NOT NULL,
-    FOREIGN KEY (idEmpleado) REFERENCES Empleados(idEmpleado) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (idEmpleado) REFERENCES Empleados(idEmpleado) ON UPDATE CASCADE
 );
 
 CREATE TABLE Finanzas (
@@ -196,8 +196,8 @@ CREATE TABLE Pedidos (
     Estatus VARCHAR(20) CHECK (Estatus IN ('Pendiente', 'Aceptado', 'Enviado', 'Cancelado')) NOT NULL DEFAULT 'Pendiente',
     idCliente INT NOT NULL,
     idEmpleado INT,
-    FOREIGN KEY (idCliente) REFERENCES Clientes(idCliente) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (idEmpleado) REFERENCES Empleados(idEmpleado) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (idCliente) REFERENCES Clientes(idCliente) ,
+    FOREIGN KEY (idEmpleado) REFERENCES Empleados(idEmpleado)
 );
 
 CREATE TABLE DetallePedidos (
@@ -208,5 +208,5 @@ CREATE TABLE DetallePedidos (
     PrecioUnitario DECIMAL(10,2) NOT NULL,
     Subtotal AS (Cantidad * PrecioUnitario) PERSISTED,
     FOREIGN KEY (idPedido) REFERENCES Pedidos(idPedido) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto) ON UPDATE CASCADE
 );
