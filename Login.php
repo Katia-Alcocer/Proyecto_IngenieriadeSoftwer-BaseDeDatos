@@ -1,31 +1,52 @@
-<?php
-echo "Hola desde Login.php";
-?>
+//http://localhost:8081/Login.php
 
+
+<?php
+require_once("conexion.php"); // Incluye la conexión una sola vez
+
+$mensaje = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+
+    $sql = "SELECT * FROM Usuarios WHERE Email = ? AND Contrasena = ?";
+    $params = array($email, $password);
+    $stmt = sqlsrv_query($conn, $sql, $params);
+
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    if (sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $mensaje = " Inicio de sesión exitoso.";
+    } else {
+        $mensaje = " Usuario o contraseña incorrectos.";
+    }
+
+    sqlsrv_close($conn);
+}
+?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Pildora</title>
-    <link rel="icon" type="image/x-icon" href="imagenes/Logo1.jpg">
-    <link rel="stylesheet" type="text/css" href="styleLogin.css">
+    <title>Iniciar Sesión</title>
 </head>
 <body>
-  <div class="login">
-    <h2>Iniciar Sesión</h2>
-    <img src="imagenes/Login1.jpg" alt="Ícono de inicio de sesión">
-    <form id="loginForm" method="POST" action="login.php">
-        <label for="email">Usuario:</label>
-        <input type="email" id="email" name="email" required>
-        
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" required>
+    <h2>Login</h2>
 
-        <button type="submit">Ingresar</button>
+    <p><?php echo $mensaje; ?></p>
+
+    <form action="Login.php" method="POST">
+        <label>Correo:</label>
+        <input type="email" name="email" required><br><br>
+
+        <label>Contraseña:</label>
+        <input type="password" name="password" required><br><br>
+
+        <input type="submit" value="Ingresar">
     </form>
-
-  </div>
 </body>
 </html>
