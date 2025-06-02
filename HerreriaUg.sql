@@ -96,7 +96,7 @@ CREATE TABLE Empleados (
     RFC VARCHAR(13) NOT NULL UNIQUE,
     NumeroSeguroSocial VARCHAR(11) NOT NULL UNIQUE,
     Usuario VARCHAR(255) NOT NULL UNIQUE,
-    ContraseÃ±a VARCHAR(255) NOT NULL,
+    Contraseña VARCHAR(255) NOT NULL,
     idPersona INT NOT NULL,
     FOREIGN KEY (idPersona) REFERENCES Personas(idPersona) ON DELETE CASCADE ON UPDATE CASCADE
 );
