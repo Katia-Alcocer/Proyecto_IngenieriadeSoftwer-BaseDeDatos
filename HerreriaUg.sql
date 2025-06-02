@@ -210,3 +210,30 @@ CREATE TABLE DetallePedidos (
     FOREIGN KEY (idPedido) REFERENCES Pedidos(idPedido) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (idProducto) REFERENCES Productos(idProducto) ON UPDATE CASCADE
 );
+
+ALTER TABLE Productos
+DROP COLUMN PrecioVenta;
+ALTER TABLE Productos
+ADD
+    Peso1 DECIMAL(10,2) NULL,
+    Peso2 DECIMAL(10,2) NULL,
+    PesoTotal DECIMAL(10,2) NULL;
+
+CREATE TRIGGER trg_CalcularPesoTotal
+ON Productos
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE P
+    SET PesoTotal = 
+        CASE 
+            WHEN I.Peso1 IS NULL AND I.Peso2 IS NULL THEN NULL
+            WHEN I.Peso1 IS NULL THEN I.Peso2
+            WHEN I.Peso2 IS NULL THEN I.Peso1
+            ELSE (I.Peso1 + I.Peso2) / 2.0
+        END
+    FROM Productos P
+    INNER JOIN inserted I ON P.idProducto = I.idProducto;
+END;
