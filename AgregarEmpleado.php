@@ -1,115 +1,148 @@
+<?php require_once '../conexion.php'; 
 
-<?php
-require_once '../conexion.php';
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    try {
+        $hash = hash("sha256", $_POST["Contrasena"]);
+
+        $stmt = $pdo->prepare("EXEC RegistrarEmpleado 
+            @Nombre = ?, @Paterno = ?, @Materno = ?, 
+            @Telefono = ?, @Email = ?, @Edad = ?, @Sexo = ?, 
+            @Calle = ?, @Numero = ?, @c_tipo_asenta = ?, 
+            @RFC = ?, @CURP = ?, @NumeroSeguro = ?, 
+            @Usuario = ?, @Contrasena = ?");
+
+        $stmt->execute([
+            $_POST["Nombre"],
+            $_POST["Paterno"],
+            $_POST["Materno"],
+            $_POST["Telefono"],
+            $_POST["Email"],
+            $_POST["Edad"],
+            $_POST["Sexo"],
+            $_POST["Calle"],
+            $_POST["Numero"],
+            $_POST["idAsentamiento"],
+            $_POST["RFC"],
+            $_POST["CURP"],
+            $_POST["NumeroSeguro"],
+            $_POST["Usuario"],
+            $hash
+        ]);
+
+        echo "<div class='alert alert-success mt-3'>Empleado registrado correctamente.</div>";
+    } catch (PDOException $e) {
+        echo "<div class='alert alert-danger mt-3'>Error: " . htmlspecialchars($e->getMessage()) . "</div>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Iniciar Sesión</title>
-    <!-- Bootstrap 5 CSS CDN -->
-<!-- MDBootstrap CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
-<!-- Bootstrap 5 CSS CDN -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="styleAgregar.css">
+  <meta charset="UTF-8">
+  <title>Registro de Empleado</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('codigoPostal').addEventListener('blur', function() {
+        let cp = this.value;
+        if (cp.length === 5) {
+            fetch('consulta_cp.php?cp=' + cp)
+                .then(response => response.json())
+                .then(data => {
+                    const asentamientos = document.getElementById('asentamiento');
+                    asentamientos.innerHTML = '';
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            let option = document.createElement('option');
+                            option.value = item.idAsentamiento;
+                            option.text = item.Asentamiento;
+                            option.dataset.estado = item.Estado;
+                            option.dataset.municipio = item.Municipio;
+                            option.dataset.pais = item.Pais;
+                            asentamientos.appendChild(option);
+                        });
+                        document.getElementById('asentamientosContainer').style.display = 'block';
+                        let first = asentamientos.options[0];
+                        document.getElementById('estado').value = first.dataset.estado;
+                        document.getElementById('municipio').value = first.dataset.municipio;
+                        document.getElementById('pais').value = first.dataset.pais;
 
-<!-- MDBootstrap JS -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
-
-
+                        asentamientos.addEventListener('change', function() {
+                            let selected = asentamientos.options[asentamientos.selectedIndex];
+                            document.getElementById('estado').value = selected.dataset.estado;
+                            document.getElementById('municipio').value = selected.dataset.municipio;
+                            document.getElementById('pais').value = selected.dataset.pais;
+                        });
+                    } else {
+                        document.getElementById('asentamientosContainer').style.display = 'none';
+                    }
+                });
+        }
+    });
+  });
+  </script>
 </head>
 <body>
-   <!-- Section: Design Block -->
 <section class="text-center">
-  <!-- Background image -->
-  <div class="p-5 bg-image" style="
-        background-image: url('https://mdbootstrap.com/img/new/textures/full/171.jpg');
-        height: 300px;
-        "></div>
-  <!-- Background image -->
-
-  <div class="card mx-4 mx-md-5 shadow-5-strong bg-body-tertiary" style="
-        margin-top: -100px;
-        backdrop-filter: blur(30px);
-        ">
+  <div class="p-5 bg-image" style="background-image: url('https://mdbootstrap.com/img/new/textures/full/171.jpg'); height: 300px;"></div>
+  <div class="card mx-4 mx-md-5 shadow-5-strong bg-body-tertiary" style="margin-top: -100px; backdrop-filter: blur(30px);">
     <div class="card-body py-5 px-md-5">
-
       <div class="row d-flex justify-content-center">
-        <div class="col-lg-8">
-          <h2 class="fw-bold mb-5">Sign up now</h2>
-          <form>
-            <!-- 2 column grid layout with text inputs for the first and last names -->
+        <div class="col-lg-10">
+          <h2 class="fw-bold mb-5">Registrar Empleado</h2>
+          <form method="POST" action="">
             <div class="row">
-              <div class="col-md-6 mb-4">
-                <div data-mdb-input-init class="form-outline">
-                  <input type="text" id="form3Example1" class="form-control" />
-                  <label class="form-label" for="form3Example1">First name</label>
-                </div>
+              <div class="col-md-4 mb-4"><input type="text" name="Nombre" class="form-control" required><label class="form-label">Nombre</label></div>
+              <div class="col-md-4 mb-4"><input type="text" name="Paterno" class="form-control" required><label class="form-label">Apellido Paterno</label></div>
+              <div class="col-md-4 mb-4"><input type="text" name="Materno" class="form-control" required><label class="form-label">Apellido Materno</label></div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-4"><input type="text" name="Telefono" class="form-control" required><label class="form-label">Teléfono</label></div>
+              <div class="col-md-4 mb-4"><input type="email" name="Email" class="form-control" required><label class="form-label">Email</label></div>
+              <div class="col-md-4 mb-4"><input type="number" name="Edad" class="form-control" required><label class="form-label">Edad</label></div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-4">
+                <select name="Sexo" class="form-select" required>
+                  <option value="H">Hombre</option>
+                  <option value="M">Mujer</option>
+                </select>
+                <label class="form-label">Sexo</label>
               </div>
-              <div class="col-md-6 mb-4">
-                <div data-mdb-input-init class="form-outline">
-                  <input type="text" id="form3Example2" class="form-control" />
-                  <label class="form-label" for="form3Example2">Last name</label>
-                </div>
-              </div>
+              <div class="col-md-4 mb-4"><input type="text" name="Calle" class="form-control" required><label class="form-label">Calle</label></div>
+              <div class="col-md-4 mb-4"><input type="number" name="Numero" class="form-control" required><label class="form-label">Número</label></div>
             </div>
-
-            <!-- Email input -->
-            <div data-mdb-input-init class="form-outline mb-4">
-              <input type="email" id="form3Example3" class="form-control" />
-              <label class="form-label" for="form3Example3">Email address</label>
+            <div class="mb-3">
+              <label for="codigoPostal" class="form-label">Código Postal</label>
+              <input type="text" class="form-control" id="codigoPostal" name="codigoPostal" required>
             </div>
-
-            <!-- Password input -->
-            <div data-mdb-input-init class="form-outline mb-4">
-              <input type="password" id="form3Example4" class="form-control" />
-              <label class="form-label" for="form3Example4">Password</label>
+            <div class="mb-3" id="asentamientosContainer" style="display:none;">
+              <label for="asentamiento" class="form-label">Asentamiento</label>
+              <select class="form-select" id="asentamiento" name="idAsentamiento" required></select>
             </div>
-
-            <!-- Checkbox -->
-            <div class="form-check d-flex justify-content-center mb-4">
-              <input class="form-check-input me-2" type="checkbox" value="" id="form2Example33" checked />
-              <label class="form-check-label" for="form2Example33">
-                Subscribe to our newsletter
-              </label>
+            <input type="hidden" name="idAsentamiento" id="idAsentamiento">
+            <div class="mb-3"><label for="estado" class="form-label">Estado</label><input type="text" class="form-control" id="estado" disabled></div>
+            <div class="mb-3"><label for="municipio" class="form-label">Municipio</label><input type="text" class="form-control" id="municipio" disabled></div>
+            <div class="mb-3"><label for="pais" class="form-label">País</label><input type="text" class="form-control" id="pais" disabled></div>
+            <div class="row">
+              <div class="col-md-4 mb-4"><input type="text" name="RFC" class="form-control" required><label class="form-label">RFC</label></div>
+              <div class="col-md-4 mb-4"><input type="text" name="CURP" class="form-control"><label class="form-label">CURP</label></div>
+              <div class="col-md-4 mb-4"><input type="text" name="NumeroSeguro" class="form-control" required><label class="form-label">NSS</label></div>
             </div>
-
-            <!-- Submit button -->
-            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">
-              Sign up
-            </button>
-
-            <!-- Register buttons -->
-            <div class="text-center">
-              <p>or sign up with:</p>
-              <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
-                <i class="fab fa-facebook-f"></i>
-              </button>
-
-              <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
-                <i class="fab fa-google"></i>
-              </button>
-
-              <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
-                <i class="fab fa-twitter"></i>
-              </button>
-
-              <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
-                <i class="fab fa-github"></i>
-              </button>
+            <div class="row">
+              <div class="col-md-6 mb-4"><input type="text" name="Usuario" class="form-control" required><label class="form-label">Usuario</label></div>
+              <div class="col-md-6 mb-4"><input type="password" name="Contrasena" class="form-control" required><label class="form-label">Contraseña</label></div>
             </div>
+            <button type="submit" class="btn btn-primary btn-block mb-4">Registrar</button>
           </form>
         </div>
       </div>
     </div>
   </div>
 </section>
-<!-- Section: Design Block -->
-
-   <!-- Bootstrap 5 JS + Popper.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

@@ -24,14 +24,14 @@ BEGIN
     SET NOCOUNT ON;
 
     BEGIN TRY
-        -- Validar existencia previa de persona por teléfono o email (sin considerar espacios ni mayúsculas)
+        -- Validar existencia previa de persona por telï¿½fono o email (sin considerar espacios ni mayï¿½sculas)
         IF EXISTS (
             SELECT 1 FROM Personas
             WHERE LTRIM(RTRIM(Telefono)) = LTRIM(RTRIM(@Telefono))
                OR LOWER(LTRIM(RTRIM(Email))) = LOWER(LTRIM(RTRIM(@Email)))
         )
         BEGIN
-            THROW 50001, 'Ya existe una persona con ese teléfono o email.', 1;
+            THROW 50001, 'Ya existe una persona con ese telï¿½fono o email.', 1;
         END
 
         BEGIN TRANSACTION;
@@ -98,15 +98,15 @@ BEGIN
     SET NOCOUNT ON;
 
     BEGIN TRY
-        -- Validación previa: Teléfono o Email ya existen
+        -- Validaciï¿½n previa: Telï¿½fono o Email ya existen
         IF EXISTS (
             SELECT 1 FROM Personas WHERE Telefono = @Telefono OR Email = @Email
         )
         BEGIN
-            THROW 50001, 'Teléfono o Email ya registrados', 1;
+            THROW 50001, 'Telï¿½fono o Email ya registrados', 1;
         END
 
-        -- Validación previa: Usuario ya existe
+        -- Validaciï¿½n previa: Usuario ya existe
         IF EXISTS (
             SELECT 1 FROM Empleados WHERE Usuario = @Usuario
         )
@@ -133,7 +133,7 @@ BEGIN
             SET @idPersona = SCOPE_IDENTITY();
 
             -- Insertar empleado
-            INSERT INTO Empleados (Puesto, RFC, NumeroSeguroSocial, Usuario, Contraseña, idPersona)
+            INSERT INTO Empleados (Puesto, RFC, NumeroSeguroSocial, Usuario, Contraseï¿½a, idPersona)
             VALUES ('Agente de Venta', @RFC, @NumeroSeguro, @Usuario, @Contrasena, @idPersona);
 
             SET @idEmpleado = SCOPE_IDENTITY();
@@ -306,7 +306,7 @@ END;
 CREATE PROCEDURE ProcesarUnaVenta
     @p_id_empleado INT,
     @p_id_cliente INT,
-    @p_tipo_pago VARCHAR(20), -- No hay ENUM en SQL Server, usar VARCHAR con validación opcional
+    @p_tipo_pago VARCHAR(20), -- No hay ENUM en SQL Server, usar VARCHAR con validaciï¿½n opcional
     @p_pago DECIMAL(10,2)
 AS
 BEGIN
@@ -323,7 +323,7 @@ BEGIN
         @v_credito_cliente DECIMAL(10,2),
         @v_limite_cliente DECIMAL(10,2);
 
-    -- Asignar cliente: si no es válido, asignar 0 (cliente genérico)
+    -- Asignar cliente: si no es vï¿½lido, asignar 0 (cliente genï¿½rico)
     SET @v_cliente = CASE WHEN @p_id_cliente IS NULL OR @p_id_cliente <= 0 THEN 0 ELSE @p_id_cliente END;
 
     -- Calcular subtotal, IVA, IEPS y cantidad de productos sumados
@@ -338,7 +338,7 @@ BEGIN
 
     SET @v_monto = ISNULL(@v_subtotal,0) + ISNULL(@v_iva,0) + ISNULL(@v_ieps,0);
 
-    -- Validar que el carrito no esté vacío
+    -- Validar que el carrito no estï¿½ vacï¿½o
     IF @v_cantidad_productos IS NULL OR @v_cantidad_productos = 0
     BEGIN
         RAISERROR('No hay productos en el carrito para procesar la venta.', 16, 1);
@@ -356,13 +356,13 @@ BEGIN
 
         IF @v_cliente = 0
         BEGIN
-            RAISERROR('Cliente genérico no puede comprar a crédito.', 16, 1);
+            RAISERROR('Cliente genï¿½rico no puede comprar a crï¿½dito.', 16, 1);
             RETURN;
         END
 
         IF @v_credito_cliente < @v_monto
         BEGIN
-            RAISERROR('Crédito insuficiente para realizar la venta.', 16, 1);
+            RAISERROR('Crï¿½dito insuficiente para realizar la venta.', 16, 1);
             RETURN;
         END
 
@@ -401,7 +401,7 @@ BEGIN
             p.PrecioVenta * t.Cantidad * 0.08, -- IEPS
             @v_id_venta,
             t.idProducto,
-            NULL -- Aquí puedes añadir lógica para descuentos si quieres
+            NULL -- Aquï¿½ puedes aï¿½adir lï¿½gica para descuentos si quieres
         FROM Temp_Ventas t
         INNER JOIN Productos p ON t.idProducto = p.idProducto
         WHERE t.idEmpleado = @p_id_empleado;
@@ -416,7 +416,7 @@ BEGIN
         -- Limpiar carrito
         DELETE FROM Temp_Ventas WHERE idEmpleado = @p_id_empleado;
 
-        -- Insertar registro en Finanzas (invertido = 0 para simplificar, cambia según necesites)
+        -- Insertar registro en Finanzas (invertido = 0 para simplificar, cambia segï¿½n necesites)
         INSERT INTO Finanzas (idVenta, TotalVenta, Invertido)
         VALUES (@v_id_venta, @v_monto, 0);
 
@@ -607,7 +607,7 @@ BEGIN
     END TRY
     BEGIN CATCH
         ROLLBACK TRANSACTION;
-        THROW; -- Re-lanza el error para manejarlo en la aplicación
+        THROW; -- Re-lanza el error para manejarlo en la aplicaciï¿½n
     END CATCH
 END;
 
@@ -656,7 +656,7 @@ BEGIN
     FROM Clientes
     WHERE idCliente = @p_idCliente;
 
-    -- Recuperación lógica en Personas
+    -- Recuperaciï¿½n lï¿½gica en Personas
     UPDATE Personas
     SET Estatus = 'Activo'
     WHERE idPersona = @persona_id;
@@ -675,7 +675,7 @@ BEGIN
     FROM Clientes
     WHERE idCliente = @p_idCliente;
 
-    -- Baja lógica en Personas
+    -- Baja lï¿½gica en Personas
     UPDATE Personas
     SET Estatus = 'Inactivo'
     WHERE idPersona = @persona_id;
@@ -814,7 +814,7 @@ CREATE PROCEDURE ActualizarEmpleado
     @p_Edad SMALLINT,
     @p_Sexo CHAR(1),  -- 'H' o 'M'
     @p_idDomicilio INT,
-    @p_Puesto VARCHAR(20),  -- Validar desde lógica o CHECK constraint
+    @p_Puesto VARCHAR(20),  -- Validar desde lï¿½gica o CHECK constraint
     @p_RFC VARCHAR(13),
     @p_NumeroSeguroSocial VARCHAR(11),
     @p_Usuario VARCHAR(255)
@@ -840,7 +840,7 @@ BEGIN
         idDomicilio = @p_idDomicilio
     WHERE idPersona = @persona_id;
 
-    -- Actualizar en Empleados (sin contraseña)
+    -- Actualizar en Empleados (sin contraseï¿½a)
     UPDATE Empleados
     SET 
         Puesto = @p_Puesto,
@@ -862,7 +862,7 @@ CREATE PROCEDURE AgregarEmpleado
     @p_Edad SMALLINT,
     @p_Sexo CHAR(1),  -- 'H' o 'M'
     @p_idDomicilio INT,
-    @p_Puesto VARCHAR(20),  -- Validar en la lógica o con CHECK
+    @p_Puesto VARCHAR(20),  -- Validar en la lï¿½gica o con CHECK
     @p_RFC VARCHAR(13),
     @p_NumeroSeguroSocial VARCHAR(11),
     @p_Usuario VARCHAR(255),
@@ -882,7 +882,7 @@ BEGIN
 
     -- Insertar en Empleados
     INSERT INTO Empleados (
-        Puesto, RFC, NumeroSeguroSocial, Usuario, Contraseña, idPersona
+        Puesto, RFC, NumeroSeguroSocial, Usuario, Contraseï¿½a, idPersona
     ) VALUES (
         @p_Puesto, @p_RFC, @p_NumeroSeguroSocial, @p_Usuario, @p_Contrasena, @nuevo_idPersona
     );
@@ -890,14 +890,6 @@ END;
 
 
 
-CREATE PROCEDURE BuscarProductoPorCodigoBarras
-    @p_codigo_barras VARCHAR(50)
-AS
-BEGIN
-    SELECT * 
-    FROM Productos
-    WHERE CodigoBarras = @p_codigo_barras AND Estado = 'Activo';
-END;
 
 
 
