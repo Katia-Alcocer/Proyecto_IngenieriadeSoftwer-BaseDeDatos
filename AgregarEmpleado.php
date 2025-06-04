@@ -2,7 +2,9 @@
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
-       $hash = hash("sha256", $_POST["Contrasena"]);
+       
+       $hash = password_hash($_POST["Contrasena"], PASSWORD_DEFAULT);
+
         $c_CP = intval($_POST["c_CP"]); // <-- conversión explícita
 
         $stmt = $pdo->prepare("EXEC RegistrarEmpleado 

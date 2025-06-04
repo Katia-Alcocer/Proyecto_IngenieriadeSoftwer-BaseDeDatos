@@ -84,15 +84,14 @@
   <h1>Menú Principal</h1>
 
   <div class="menu-container">
-    <a href="VerCreditos.php" class="menu-item">Ver Créditos</a>
-    <a href="VerModificaciones.php" class="menu-item">Ver Modificaciones</a>
-    <a href="VerDescuentos.php" class="menu-item">Ver Descuentos</a>
-    <a href="VerEmpleados.php" class="menu-item">Ver Empleados</a>
-    <a href="VerClientes.php" class="menu-item">Ver Clientes</a>
-    <a href="VerVentas.php" class="menu-item">Ver Ventas</a>
-    <a href="VerAlmacen.php" class="menu-item">Ver Almacén</a>
-    <a href="VerProveedores.php" class="menu-item">Ver Proveedores</a>
-    <a href="VerReportes.php" class="menu-item">Reportes</a>
+    <a href="VerCreditos.php" class="menu-item">Devoluciones</a>
+    <a href="VerModificaciones.php" class="menu-item">Productos no aptos</a>
+    <a href="VerDescuentos.php" class="menu-item">Productos por Provedor</a>
+    <a href="VerEmpleados.php" class="menu-item">Productos Vendidos por Provedor</a>
+    <a href="VerEmpleados.php" class="menu-item">Empleados Antiguos</a>
+    <a href="VerEmpleados.php" class="menu-item">Clientes Antiguos</a>
+    
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

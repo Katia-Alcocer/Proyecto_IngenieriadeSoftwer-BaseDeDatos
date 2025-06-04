@@ -1,30 +1,44 @@
 <?php
-require_once '../conexion.php';
+session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $usuario = $_POST['usuario'] ?? '';
-    $contrasena = $_POST['contrasena'] ?? '';
+require_once '../conexion.php'; // Asegúrate de que `$pdo` está definido correctamente
 
-    try {
-        $stmt = $pdo->prepare("EXEC ValidarInicioSesion ?, ?, ?");
-        $pagina = null;
-        $stmt->bindParam(1, $usuario);
-        $stmt->bindParam(2, $contrasena);
-        $stmt->bindParam(3, $pagina, PDO::PARAM_INPUT_OUTPUT, 255); // Salida
+$claveInput = $_POST['Clave'] ?? '';
 
-        $stmt->execute();
+$stmt = $conn->prepare("SELECT * FROM Empleados WHERE Usuario = ?");
+$stmt->bind_param("s", $usuarioInput);
+$stmt->execute();
+$resultado = $stmt->get_result();
 
-        if ($pagina) {
-            header("Location: $pagina");
-            exit;
-        } else {
-            echo "<script>alert('Usuario o contraseña incorrectos');</script>";
-        }
-    } catch (PDOException $e) {
-        die("Error ejecutando el procedimiento: " . $e->getMessage());
+if ($resultado->num_rows === 1) {
+    $usuario = $resultado->fetch_assoc();
+    $hashAlmacenado = $usuario['Contraseña'];
+
+    // 1. Intentar verificar con password_hash
+    if (password_verify($claveInput, $hashAlmacenado)) {
+        // Acceso correcto con hash moderno
+        iniciarSesion($usuario);
+    } 
+    // 2. Intentar con SHA256 si lo anterior falla
+    elseif (hash("sha256", $claveInput) === $hashAlmacenado) {
+        // Acceso correcto, pero con SHA256
+        // Migrar contraseña a password_hash
+        $nuevoHash = password_hash($claveInput, PASSWORD_DEFAULT);
+        $update = $conn->prepare("UPDATE Empleados SET Contraseña = ? WHERE idEmpleado = ?");
+        $update->bind_param("si", $nuevoHash, $usuario['idEmpleado']);
+        $update->execute();
+
+        iniciarSesion($usuario); // función que hace el login y redirige
+    } 
+    else {
+        echo "Contraseña incorrecta.";
     }
+} else {
+    echo "Usuario no encontrado.";
 }
+
 ?>
+
 
 
 <!DOCTYPE html>
@@ -75,8 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </div>
 
                   <div class="text-center pt-1 mb-5 pb-1">
-                    <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">Iniciar Sesión</button>
-                    <a class="text-muted" href="#!">Olvidó su Contraseña?</a>
+                    <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Iniciar Sesión</button>
+
+                  
                   </div>
 
                 </form>
