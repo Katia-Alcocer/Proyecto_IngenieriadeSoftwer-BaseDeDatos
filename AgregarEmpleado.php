@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         echo "<script>
               alert('Empleado registrado con éxito.');
-              window.location.href = 'pagina1.php';
+              window.location.href = 'VerEmpleados.php';
             </script>";
     } catch (PDOException $e) {
         echo "<div class='alert alert-danger mt-3'>Error: " . htmlspecialchars($e->getMessage()) . "</div>";
@@ -128,7 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <button type="submit" class="btn btn-primary btn-block mb-4">Registrar</button>
-            <button type="button" class="btn btn-secondary btn-block mb-4" onclick="window.location.href='pagina1l.php'">Salir</button>
+            <button type="button" class="btn btn-secondary btn-block mb-4" onclick="window.location.href='VerEmpleados.php'">Salir</button>
 
           </form>
         </div>
