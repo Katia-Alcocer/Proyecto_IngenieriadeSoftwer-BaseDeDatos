@@ -80,13 +80,13 @@
   </style>
 </head>
 <body>
-<button class="btn-salir" onclick="window.location.href='Login.php'">Salir</button>
-  <h1>Menú Principal</h1>
+<button class="btn-salir" onclick="window.location.href='pagina1.php'">Salir</button>
+  <h1>Menú Reportes</h1>
 
   <div class="menu-container">
     <a href="VerCreditos.php" class="menu-item">Devoluciones</a>
     <a href="VerModificaciones.php" class="menu-item">Productos no aptos</a>
-    <a href="VerDescuentos.php" class="menu-item">Productos por Provedor</a>
+    <a href="VerProductoProveedor.php" class="menu-item">Productos por Provedor</a>
     <a href="VerEmpleados.php" class="menu-item">Productos Vendidos por Provedor</a>
     <a href="VerEmpleados.php" class="menu-item">Empleados Antiguos</a>
     <a href="VerEmpleados.php" class="menu-item">Clientes Antiguos</a>

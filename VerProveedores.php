@@ -55,7 +55,7 @@ try {
             <td><?= htmlspecialchars($prov['idProveedor']) ?></td>
             <td><?= htmlspecialchars($prov['Nombre']) ?></td>
             <td>
-              <a href="VerProveedor.php?id=<?= urlencode($prov['idProveedor']) ?>" class="icon-eye" title="Ver proveedor">
+              <a href="VerProductoProveedor.php?id=<?= urlencode($prov['idProveedor']) ?>" class="icon-eye" title="Ver proveedor">
                 👁
               </a>
             </td>
