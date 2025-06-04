@@ -86,7 +86,7 @@
   <div class="menu-container">
     <a href="VerCreditos.php" class="menu-item">Devoluciones</a>
     <a href="VerModificaciones.php" class="menu-item">Productos no aptos</a>
-    <a href="VerProductoProveedor.php" class="menu-item">Productos por Provedor</a>
+    <a href="TablaProductoProvedor.php" class="menu-item">Productos por Provedor</a>
     <a href="VerEmpleados.php" class="menu-item">Productos Vendidos por Provedor</a>
     <a href="VerEmpleados.php" class="menu-item">Empleados Antiguos</a>
     <a href="VerEmpleados.php" class="menu-item">Clientes Antiguos</a>
