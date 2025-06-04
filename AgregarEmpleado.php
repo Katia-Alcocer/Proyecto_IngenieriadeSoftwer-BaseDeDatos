@@ -2,34 +2,42 @@
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
-        $hash = hash("sha256", $_POST["Contrasena"]);
+       $hash = hash("sha256", $_POST["Contrasena"]);
+        $c_CP = intval($_POST["c_CP"]); // <-- conversión explícita
 
         $stmt = $pdo->prepare("EXEC RegistrarEmpleado 
-            @Nombre = ?, @Paterno = ?, @Materno = ?, 
-            @Telefono = ?, @Email = ?, @Edad = ?, @Sexo = ?, 
-            @Calle = ?, @Numero = ?, @c_tipo_asenta = ?, 
-            @RFC = ?, @CURP = ?, @NumeroSeguro = ?, 
-            @Usuario = ?, @Contrasena = ?");
+          @Nombre = ?, @Paterno = ?, @Materno = ?, 
+          @Telefono = ?, @Email = ?, @Edad = ?, @Sexo = ?, 
+          @Calle = ?, @Numero = ?, @c_CP = ?, 
+          @RFC = ?, @CURP = ?, @NumeroSeguro = ?, 
+          @Usuario = ?, @Contrasena = ?, @Puesto = ?");
 
         $stmt->execute([
-            $_POST["Nombre"],
-            $_POST["Paterno"],
-            $_POST["Materno"],
-            $_POST["Telefono"],
-            $_POST["Email"],
-            $_POST["Edad"],
-            $_POST["Sexo"],
-            $_POST["Calle"],
-            $_POST["Numero"],
-            $_POST["idAsentamiento"],
-            $_POST["RFC"],
-            $_POST["CURP"],
-            $_POST["NumeroSeguro"],
-            $_POST["Usuario"],
-            $hash
+          $_POST["Nombre"],
+          $_POST["Paterno"],
+          $_POST["Materno"],
+          $_POST["Telefono"],
+          $_POST["Email"],
+          $_POST["Edad"],
+          $_POST["Sexo"],
+          $_POST["Calle"],
+          $_POST["Numero"],
+          $c_CP = intval(trim($_POST["c_CP"])),
+          $_POST["RFC"],
+          $_POST["CURP"],
+          $_POST["NumeroSeguro"],
+          $_POST["Usuario"],
+          $hash,
+          $_POST["Puesto"]
+
+
         ]);
 
-        echo "<div class='alert alert-success mt-3'>Empleado registrado correctamente.</div>";
+
+        echo "<script>
+              alert('Empleado registrado con éxito.');
+              window.location.href = 'pagina1.php';
+            </script>";
     } catch (PDOException $e) {
         echo "<div class='alert alert-danger mt-3'>Error: " . htmlspecialchars($e->getMessage()) . "</div>";
     }
@@ -44,46 +52,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
-  <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('codigoPostal').addEventListener('blur', function() {
-        let cp = this.value;
-        if (cp.length === 5) {
-            fetch('consulta_cp.php?cp=' + cp)
-                .then(response => response.json())
-                .then(data => {
-                    const asentamientos = document.getElementById('asentamiento');
-                    asentamientos.innerHTML = '';
-                    if (data.length > 0) {
-                        data.forEach(item => {
-                            let option = document.createElement('option');
-                            option.value = item.idAsentamiento;
-                            option.text = item.Asentamiento;
-                            option.dataset.estado = item.Estado;
-                            option.dataset.municipio = item.Municipio;
-                            option.dataset.pais = item.Pais;
-                            asentamientos.appendChild(option);
-                        });
-                        document.getElementById('asentamientosContainer').style.display = 'block';
-                        let first = asentamientos.options[0];
-                        document.getElementById('estado').value = first.dataset.estado;
-                        document.getElementById('municipio').value = first.dataset.municipio;
-                        document.getElementById('pais').value = first.dataset.pais;
-
-                        asentamientos.addEventListener('change', function() {
-                            let selected = asentamientos.options[asentamientos.selectedIndex];
-                            document.getElementById('estado').value = selected.dataset.estado;
-                            document.getElementById('municipio').value = selected.dataset.municipio;
-                            document.getElementById('pais').value = selected.dataset.pais;
-                        });
-                    } else {
-                        document.getElementById('asentamientosContainer').style.display = 'none';
-                    }
-                });
-        }
-    });
-  });
-  </script>
 </head>
 <body>
 <section class="text-center">
@@ -115,34 +83,111 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <div class="col-md-4 mb-4"><input type="text" name="Calle" class="form-control" required><label class="form-label">Calle</label></div>
               <div class="col-md-4 mb-4"><input type="number" name="Numero" class="form-control" required><label class="form-label">Número</label></div>
             </div>
-            <div class="mb-3">
-              <label for="codigoPostal" class="form-label">Código Postal</label>
-              <input type="text" class="form-control" id="codigoPostal" name="codigoPostal" required>
+
+            <div class="row"> 
+              <div class="col-md-6 mb-4">
+                <label for="Puesto" class="form-label">Puesto</label>
+                <select name="Puesto" class="form-select" required>
+                  <option value="">Selecciona un puesto</option>
+                  <option value="Cajero">Cajero</option>
+                  <option value="Agente de Venta">Agente de Venta</option>
+                </select>
+              </div>
+
+              <div class="col-md-6 mb-4">
+                <label for="codigoPostal" class="form-label">Código Postal</label>
+                <input type="text" class="form-control" id="codigoPostal" name="codigoPostal" required>
+              </div>
             </div>
+
+            <!-- Asentamientos -->
             <div class="mb-3" id="asentamientosContainer" style="display:none;">
               <label for="asentamiento" class="form-label">Asentamiento</label>
               <select class="form-select" id="asentamiento" name="idAsentamiento" required></select>
             </div>
-            <input type="hidden" name="idAsentamiento" id="idAsentamiento">
-            <div class="mb-3"><label for="estado" class="form-label">Estado</label><input type="text" class="form-control" id="estado" disabled></div>
-            <div class="mb-3"><label for="municipio" class="form-label">Municipio</label><input type="text" class="form-control" id="municipio" disabled></div>
-            <div class="mb-3"><label for="pais" class="form-label">País</label><input type="text" class="form-control" id="pais" disabled></div>
+
+            <!-- Campo oculto para enviar c_CP -->
+            <input type="hidden" name="c_CP" id="c_CP" />
+
+            <!-- Campos geográficos -->
+            <div class="row"> 
+              <div class="col-md-4 mb-4"><label for="estado" class="form-label">Estado</label><input type="text" class="form-control" id="estado" disabled></div>
+              <div class="col-md-4 mb-4"><label for="municipio" class="form-label">Municipio</label><input type="text" class="form-control" id="municipio" disabled></div>
+              <div class="col-md-4 mb-4"><label for="pais" class="form-label">País</label><input type="text" class="form-control" id="pais" disabled></div>
+            </div>
+
             <div class="row">
               <div class="col-md-4 mb-4"><input type="text" name="RFC" class="form-control" required><label class="form-label">RFC</label></div>
               <div class="col-md-4 mb-4"><input type="text" name="CURP" class="form-control"><label class="form-label">CURP</label></div>
               <div class="col-md-4 mb-4"><input type="text" name="NumeroSeguro" class="form-control" required><label class="form-label">NSS</label></div>
             </div>
+
             <div class="row">
               <div class="col-md-6 mb-4"><input type="text" name="Usuario" class="form-control" required><label class="form-label">Usuario</label></div>
               <div class="col-md-6 mb-4"><input type="password" name="Contrasena" class="form-control" required><label class="form-label">Contraseña</label></div>
             </div>
+
             <button type="submit" class="btn btn-primary btn-block mb-4">Registrar</button>
+            <button type="button" class="btn btn-secondary btn-block mb-4" onclick="window.location.href='pagina1l.php'">Salir</button>
+
           </form>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('codigoPostal').addEventListener('blur', function() {
+    let cp = this.value;
+    if (cp.length === 5) {
+      fetch('consulta_cp.php?cp=' + cp)
+        .then(response => response.json())
+        .then(data => {
+          const asentamientos = document.getElementById('asentamiento');
+          asentamientos.innerHTML = '';
+          if (data.length > 0) {
+            data.forEach(item => {
+              let option = document.createElement('option');
+              option.value = item.idAsentamiento;
+              option.text = item.Asentamiento;
+              option.dataset.estado = item.Estado;
+              option.dataset.municipio = item.Municipio;
+              option.dataset.pais = item.Pais;
+              option.dataset.ccp = item.c_CP;
+              asentamientos.appendChild(option);
+            });
+
+            document.getElementById('asentamientosContainer').style.display = 'block';
+
+            // Seleccionar el primero y actualizar datos
+            let first = asentamientos.options[0];
+            document.getElementById('estado').value = first.dataset.estado;
+            document.getElementById('municipio').value = first.dataset.municipio;
+            document.getElementById('pais').value = first.dataset.pais;
+            document.getElementById('c_CP').value = first.dataset.ccp;
+
+            asentamientos.addEventListener('change', function() {
+              let selected = asentamientos.options[asentamientos.selectedIndex];
+              document.getElementById('estado').value = selected.dataset.estado;
+              document.getElementById('municipio').value = selected.dataset.municipio;
+              document.getElementById('pais').value = selected.dataset.pais;
+              document.getElementById('c_CP').value = selected.dataset.ccp;
+            });
+          } else {
+            document.getElementById('asentamientosContainer').style.display = 'none';
+            document.getElementById('estado').value = '';
+            document.getElementById('municipio').value = '';
+            document.getElementById('pais').value = '';
+            document.getElementById('c_CP').value = '';
+          }
+        });
+    }
+  });
+});
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
