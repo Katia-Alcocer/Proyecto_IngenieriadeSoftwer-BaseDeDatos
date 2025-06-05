@@ -99,10 +99,6 @@ function iniciarSesion($usuario) {
                     <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Iniciar Sesión</button>
                   </div>
 
-                  <div class="d-flex justify-content-between">
-                    <a href="Registro.php" class="btn btn-outline-secondary btn-sm">Registro</a>
-                    <a href="OlvideClave.php" class="btn btn-outline-warning btn-sm">¿Olvidaste tu clave?</a>
-                  </div>
                 </form>
               </div>
             </div>
