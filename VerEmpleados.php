@@ -90,7 +90,7 @@ try {
 
       <!-- Celda del botón editar -->
       <td class="text-center align-middle">
-        <a href="EditarEmpleado.php?id=<?= urlencode($emp['idEmpleado']) ?>" 
+        <a href="modificar_empleado.php?id=<?= urlencode($emp['idEmpleado']) ?>" 
            class="btn btn-sm btn-primary" 
            title="Editar empleado">
           <!-- Ícono lápiz SVG -->
