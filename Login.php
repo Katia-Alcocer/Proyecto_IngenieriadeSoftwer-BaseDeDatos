@@ -1,65 +1,62 @@
 <?php
+require_once '../conexion.php'; // Ajusta la ruta según sea necesario
 session_start();
 
-require_once '../conexion.php'; // Asegúrate de que `$pdo` está definido correctamente
+$usuarioInput = $_POST['usuario'] ?? '';
+$claveInput = $_POST['contrasena'] ?? '';
+$mensaje = '';
 
-$claveInput = $_POST['Clave'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $stmt = $pdo->prepare("SELECT * FROM Empleados WHERE Usuario = ?");
+    $stmt->execute([$usuarioInput]);
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$stmt = $conn->prepare("SELECT * FROM Empleados WHERE Usuario = ?");
-$stmt->bind_param("s", $usuarioInput);
-$stmt->execute();
-$resultado = $stmt->get_result();
+    if ($usuario) {
+        $hashAlmacenado = $usuario['Contraseña'];
 
-if ($resultado->num_rows === 1) {
-    $usuario = $resultado->fetch_assoc();
-    $hashAlmacenado = $usuario['Contraseña'];
-
-    // 1. Intentar verificar con password_hash
-    if (password_verify($claveInput, $hashAlmacenado)) {
-        // Acceso correcto con hash moderno
-        iniciarSesion($usuario);
-    } 
-    // 2. Intentar con SHA256 si lo anterior falla
-    elseif (hash("sha256", $claveInput) === $hashAlmacenado) {
-        // Acceso correcto, pero con SHA256
-        // Migrar contraseña a password_hash
-        $nuevoHash = password_hash($claveInput, PASSWORD_DEFAULT);
-        $update = $conn->prepare("UPDATE Empleados SET Contraseña = ? WHERE idEmpleado = ?");
-        $update->bind_param("si", $nuevoHash, $usuario['idEmpleado']);
-        $update->execute();
-
-        iniciarSesion($usuario); // función que hace el login y redirige
-    } 
-    else {
-        echo "Contraseña incorrecta.";
+        if (password_verify($claveInput, $hashAlmacenado)) {
+            iniciarSesion($usuario);
+        } elseif (hash("sha256", $claveInput) === $hashAlmacenado) {
+            $nuevoHash = password_hash($claveInput, PASSWORD_DEFAULT);
+            $update = $pdo->prepare("UPDATE Empleados SET Contraseña = ? WHERE idEmpleado = ?");
+            $update->execute([$nuevoHash, $usuario['idEmpleado']]);
+            iniciarSesion($usuario);
+        } else {
+            $mensaje = "Contraseña incorrecta.";
+        }
+    } else {
+        $mensaje = "Usuario no encontrado.";
     }
-} else {
-    echo "Usuario no encontrado.";
 }
 
+function iniciarSesion($usuario) {
+    $_SESSION['idEmpleado'] = $usuario['idEmpleado'];
+    $_SESSION['Usuario'] = $usuario['Usuario'];
+    header("Location: dashboard.php");
+    exit();
+}
 ?>
 
-
+function iniciarSesion($usuario) {
+    $_SESSION['idEmpleado'] = $usuario['idEmpleado'];
+    $_SESSION['Usuario'] = $usuario['Usuario'];
+    header("Location: dashboard.php"); // Redirige a la página de inicio
+    exit();
+}
+?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Iniciar Sesión</title>
-    <!-- Bootstrap 5 CSS CDN -->
-<!-- MDBootstrap CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
-<!-- Bootstrap 5 CSS CDN -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="styleLogin.css">
-
-<!-- MDBootstrap JS -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
-
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styleLogin.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
 </head>
 <body>
-   <section class="h-100 gradient-form" style="background-color: #eee;">
+<section class="h-100 gradient-form" style="background-color: #eee;">
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col-xl-10">
@@ -74,24 +71,26 @@ if ($resultado->num_rows === 1) {
                   <h4 class="mt-1 mb-5 pb-1">Bienvenido a tu Plataforma de Trabajo</h4>
                 </div>
 
-                <form method="POST" action="">
+                <?php if (!empty($mensaje)) : ?>
+                  <div class="alert alert-danger"><?= htmlspecialchars($mensaje) ?></div>
+                <?php endif; ?>
+
+                <form method="POST" action="pagina1.php">
                   <p>Por favor, inicia sesión en tu cuenta</p>
 
-                  <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="email"  name="usuario" id="form2Example11" class="form-control"
-                      placeholder="Correo Electronico" required/>
+                  <div class="form-outline mb-4">
+                    <input type="email" name="usuario" id="form2Example11" class="form-control"
+                      placeholder="Correo Electrónico" required/>
                     <label class="form-label" for="form2Example11">Usuario:</label>
                   </div>
 
-                  <div data-mdb-input-init class="form-outline mb-4">
+                  <div class="form-outline mb-4">
                     <input type="password" name="contrasena" id="form2Example22" class="form-control" placeholder="Contraseña" required/>
                     <label class="form-label" for="form2Example22">Contraseña:</label>
                   </div>
 
                   <div class="text-center pt-1 mb-5 pb-1">
-                    <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Iniciar Sesión</button>
-
-                  
+                    <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Iniciar Sesión</button>
                   </div>
 
                 </form>
@@ -112,9 +111,6 @@ if ($resultado->num_rows === 1) {
     </div>
   </div>
 </section>
-
-   <!-- Bootstrap 5 JS + Popper.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
