@@ -84,7 +84,7 @@
   <h1>Menú Reportes</h1>
 
   <div class="menu-container">
-    <a href="VerCreditos.php" class="menu-item">Devoluciones</a>
+    <a href="VerProductos.php" class="menu-item">Productos</a>
     <a href="VerModificaciones.php" class="menu-item">Productos no aptos</a>
     <a href="TablaProductoProvedor.php" class="menu-item">Productos por Provedor</a>
     <a href="VerEmpleados.php" class="menu-item">Productos Vendidos por Provedor</a>

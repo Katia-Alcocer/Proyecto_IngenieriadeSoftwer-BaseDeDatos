@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Menú Principal</title>
+  <title>Menú de Órdenes</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body {
@@ -53,7 +53,7 @@
       justify-content: center;
     }
 
-       .btn-salir {
+    .btn-salir {
       position: fixed;
       top: 15px;
       right: 15px;
@@ -80,19 +80,14 @@
   </style>
 </head>
 <body>
-<button class="btn-salir" onclick="window.location.href='Login.php'">Salir</button>
-  <h1>Menú Principal</h1>
+  <button class="btn-salir" onclick="window.location.href='pagina1.php'">Salir</button>
+  <h1>Pedidos</h1>
 
   <div class="menu-container">
-    <a href="VerDevoluciones.php" class="menu-item">Ver Devoluciones</a>
-    <a href="VerModificaciones.php" class="menu-item">Ver Modificaciones</a>
-    <a href="VerDescuentos.php" class="menu-item">Ver Descuentos</a>
-    <a href="VerEmpleados.php" class="menu-item">Ver Empleados</a>
-    <a href="VerClientes.php" class="menu-item">Ver Clientes</a>
-    <a href="VerVentas.php" class="menu-item">Ver Ventas</a>
-    <a href="VerAlmacen.php" class="menu-item">Ver Almacén</a>
-    <a href="VerProveedores.php" class="menu-item">Ver Proveedores</a>
-    <a href="VerReportes.php" class="menu-item">Reportes</a>
+    <a href="ordenes_pendientes.php" class="menu-item">Pendientes</a>
+    <a href="ordenes_aceptadas.php" class="menu-item">Aceptadas</a>
+    <a href="ordenes_canceladas.php" class="menu-item">Canceladas</a>
+    <a href="ordenes_enviadas.php" class="menu-item">Enviadas</a>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
