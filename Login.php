@@ -1,5 +1,5 @@
 <?php
-require_once '../conexion.php'; // Ajusta la ruta según sea necesario
+require_once '../conexion.php'; // Ajusta la ruta a tu archivo de conexión PDO
 session_start();
 
 $usuarioInput = $_POST['usuario'] ?? '';
@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (password_verify($claveInput, $hashAlmacenado)) {
             iniciarSesion($usuario);
         } elseif (hash("sha256", $claveInput) === $hashAlmacenado) {
+            // Migración de hash antiguo a password_hash()
             $nuevoHash = password_hash($claveInput, PASSWORD_DEFAULT);
             $update = $pdo->prepare("UPDATE Empleados SET Contraseña = ? WHERE idEmpleado = ?");
             $update->execute([$nuevoHash, $usuario['idEmpleado']]);
@@ -32,15 +33,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function iniciarSesion($usuario) {
     $_SESSION['idEmpleado'] = $usuario['idEmpleado'];
     $_SESSION['Usuario'] = $usuario['Usuario'];
-    header("Location: dashboard.php");
-    exit();
-}
-?>
+    $_SESSION['Puesto'] = $usuario['Puesto'];
 
-function iniciarSesion($usuario) {
-    $_SESSION['idEmpleado'] = $usuario['idEmpleado'];
-    $_SESSION['Usuario'] = $usuario['Usuario'];
-    header("Location: dashboard.php"); // Redirige a la página de inicio
+    switch (strtolower(trim($usuario['Puesto']))) {
+        case 'administrador':
+            header("Location: pagina1.php");
+            break;
+        case 'agentedeventa':
+            header("Location: pagina2.php");
+            break;
+        case 'cajero':
+            header("Location: pagina3.php");
+            break;
+        default:
+            header("Location: dashboard.php");
+            break;
+    }
     exit();
 }
 ?>
@@ -53,7 +61,6 @@ function iniciarSesion($usuario) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styleLogin.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
 </head>
 <body>
 <section class="h-100 gradient-form" style="background-color: #eee;">
@@ -64,10 +71,9 @@ function iniciarSesion($usuario) {
           <div class="row g-0">
             <div class="col-lg-6">
               <div class="card-body p-md-5 mx-md-4">
-
                 <div class="text-center">
                   <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/lotus.webp"
-                    style="width: 185px;" alt="logo">
+                       style="width: 185px;" alt="logo">
                   <h4 class="mt-1 mb-5 pb-1">Bienvenido a tu Plataforma de Trabajo</h4>
                 </div>
 
@@ -75,32 +81,35 @@ function iniciarSesion($usuario) {
                   <div class="alert alert-danger"><?= htmlspecialchars($mensaje) ?></div>
                 <?php endif; ?>
 
-                <form method="POST" action="pagina1.php">
+                <form method="POST" action="">
                   <p>Por favor, inicia sesión en tu cuenta</p>
 
                   <div class="form-outline mb-4">
-                    <input type="email" name="usuario" id="form2Example11" class="form-control"
-                      placeholder="Correo Electrónico" required/>
-                    <label class="form-label" for="form2Example11">Usuario:</label>
+                    <input type="text" name="usuario" id="form2Example11" class="form-control"
+                           placeholder="Usuario" required/>
+                    <label class="form-label" for="form2Example11">Usuario</label>
                   </div>
 
                   <div class="form-outline mb-4">
                     <input type="password" name="contrasena" id="form2Example22" class="form-control" placeholder="Contraseña" required/>
-                    <label class="form-label" for="form2Example22">Contraseña:</label>
+                    <label class="form-label" for="form2Example22">Contraseña</label>
                   </div>
 
                   <div class="text-center pt-1 mb-5 pb-1">
                     <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Iniciar Sesión</button>
                   </div>
 
+                  <div class="d-flex justify-content-between">
+                    <a href="Registro.php" class="btn btn-outline-secondary btn-sm">Registro</a>
+                    <a href="OlvideClave.php" class="btn btn-outline-warning btn-sm">¿Olvidaste tu clave?</a>
+                  </div>
                 </form>
-
               </div>
             </div>
             <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
               <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                 <h4 class="mb-4">Somos más que una herrería</h4>
-                <p class="small mb-0">Somos un aliado en la venta de materiales metálicos y productos para herrería. 
+                 <p class="small mb-0">Somos un aliado en la venta de materiales metálicos y productos para herrería. 
                     Ofrecemos tubos, ángulos, láminas, perfiles y todo lo que nuestros clientes necesitan para sus proyectos. 
                     Nos enfocamos en brindar atención rápida, productos de calidad y un servicio que marca la diferencia.</p>
               </div>
@@ -112,5 +121,6 @@ function iniciarSesion($usuario) {
   </div>
 </section>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
 </body>
 </html>
