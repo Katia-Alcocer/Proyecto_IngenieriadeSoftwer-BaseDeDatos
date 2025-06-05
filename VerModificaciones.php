@@ -65,13 +65,13 @@ try {
   <br>
 
   <div class="d-flex justify-content-start gap-3 mt-4">
-    <!-- Botón Volver -->
+   
     <button type="button" class="btn text-white px-4 py-2" 
       style="background: linear-gradient(135deg, #2c5364, #203a43, #0f2027); border: none; font-size: 1.1rem;"
       onclick="window.location.href='pagina1.php'">
       Volver
     </button>
-    <!-- Botón Descargar PDF -->
+    
 <form action="generar_historial_pdf.php" method="post">
   <button type="submit" class="btn text-white px-4 py-2"
     style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); border: none; font-size: 1.1rem;">

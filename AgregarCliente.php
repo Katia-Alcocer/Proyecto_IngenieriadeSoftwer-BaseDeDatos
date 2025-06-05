@@ -2,7 +2,7 @@
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
-        $c_CP = intval(trim($_POST["c_CP"])); // Conversión segura
+        $c_CP = intval(trim($_POST["c_CP"])); 
 
         $stmt = $pdo->prepare("EXEC RegistrarCliente 
             @Calle = ?, @Numero = ?, @c_CP = ?, 
@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <div class="col-md-4 mb-4"><input type="number" name="Numero" class="form-control" required><label class="form-label">Número</label></div>
             </div>
 
-            <!-- Código postal y asentamientos -->
+           
             <div class="row">
               <div class="col-md-6 mb-4">
                 <label for="codigoPostal" class="form-label">Código Postal</label>
@@ -87,17 +87,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               </div>
             </div>
 
-            <!-- Campo oculto para c_CP -->
+            
             <input type="hidden" name="c_CP" id="c_CP" />
 
-            <!-- Geografía -->
+           
             <div class="row">
               <div class="col-md-4 mb-4"><label for="estado" class="form-label">Estado</label><input type="text" class="form-control" id="estado" disabled></div>
               <div class="col-md-4 mb-4"><label for="municipio" class="form-label">Municipio</label><input type="text" class="form-control" id="municipio" disabled></div>
               <div class="col-md-4 mb-4"><label for="pais" class="form-label">País</label><input type="text" class="form-control" id="pais" disabled></div>
             </div>
 
-            <!-- Datos de cliente -->
+           
             <div class="row">
               <div class="row">
                     <div class="col-md-4 mb-4">
@@ -122,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <option value="1">Sin descuento</option>
                   <option value="2">Cliente frecuente</option>
                   <option value="3">Promoción</option>
-                  <!-- Puedes generar dinámicamente desde BD -->
+                 
                 </select>
               </div>
             </div>
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
               asentamientos.appendChild(option);
             });
 
-            // Mostrar valores
+           
             let first = asentamientos.options[0];
             document.getElementById('estado').value = first.dataset.estado;
             document.getElementById('municipio').value = first.dataset.municipio;

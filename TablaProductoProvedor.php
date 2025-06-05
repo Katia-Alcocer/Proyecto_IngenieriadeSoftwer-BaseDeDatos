@@ -7,7 +7,7 @@ $mensaje = "";
 $mensajeTipo = "";
 
 try {
-    // Cargar proveedores para el select
+  
     $stmtProv = $pdo->query("SELECT idProveedor, Nombre FROM Vista_Proveedores ORDER BY Nombre");
     $proveedores = $stmtProv->fetchAll(PDO::FETCH_ASSOC);
 

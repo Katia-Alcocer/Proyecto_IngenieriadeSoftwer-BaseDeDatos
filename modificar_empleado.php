@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Obtener datos actuales
+
 $stmt = $pdo->prepare("SELECT * FROM Vista_Empleados_Detallada WHERE idEmpleado = ?");
 $stmt->execute([$idEmpleado]);
 $empleado = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -202,7 +202,7 @@ document.getElementById('cp').addEventListener('change', function () {
                 asentamientoSelect.appendChild(option);
             });
 
-            // Marcar el asentamiento actual si ya estaba guardado
+            
             const idAsentamientoPrevio = document.getElementById('idAsentamiento').value;
             if (idAsentamientoPrevio) {
                 asentamientoSelect.value = idAsentamientoPrevio;

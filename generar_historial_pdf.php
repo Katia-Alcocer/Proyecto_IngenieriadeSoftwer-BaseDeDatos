@@ -1,6 +1,6 @@
 <?php
 require_once '../conexion.php';
-require_once '../tcpdf/tcpdf.php'; // Asegúrate de que TCPDF esté en esta ruta
+require_once '../tcpdf/tcpdf.php'; 
 
 try {
     $stmt = $pdo->query("SELECT * FROM vw_HistorialModificaciones");

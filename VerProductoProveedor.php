@@ -1,6 +1,6 @@
 <?php
 require_once '../conexion.php';
-require_once '../tcpdf/tcpdf.php'; // Asegúrate de que la ruta sea correcta según tu estructura
+require_once '../tcpdf/tcpdf.php'; 
 
 // Validar parámetro
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
@@ -11,7 +11,7 @@ $idProveedor = intval($_GET['id']);
 
 
 try {
-    // Obtener nombre del proveedor
+   
     $stmtNombre = $pdo->prepare("SELECT Nombre FROM Vista_Proveedores WHERE idProveedor = :id");
     $stmtNombre->execute([':id' => $idProveedor]);
     $proveedor = $stmtNombre->fetch(PDO::FETCH_ASSOC);
@@ -20,13 +20,13 @@ try {
         die("Proveedor no encontrado.");
     }
 
-    // Obtener productos del proveedor
+   
     $stmt = $pdo->prepare("EXEC ObtenerProductosPorProveedor @p_idProveedor = :idProveedor");
     $stmt->bindParam(':idProveedor', $idProveedor, PDO::PARAM_INT);
     $stmt->execute();
     $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Crear PDF
+   
     $pdf = new TCPDF();
     $pdf->SetCreator(PDF_CREATOR);
     $pdf->SetAuthor('Tu Aplicación');
@@ -34,11 +34,11 @@ try {
     $pdf->AddPage();
     $pdf->SetFont('helvetica', '', 10);
 
-    // Título
+    
     $pdf->Cell(0, 10, 'Productos del proveedor: ' . $proveedor['Nombre'], 0, 1, 'C');
     $pdf->Ln(5);
 
-    // Construir tabla en HTML
+    
     $html = '<table border="1" cellpadding="4">
                 <thead>
                     <tr>
@@ -65,10 +65,10 @@ try {
     }
     $html .= '</tbody></table>';
 
-    // Escribir tabla HTML en el PDF
+   
     $pdf->writeHTML($html, true, false, true, false, '');
 
-    // Salida del PDF en navegador
+    
     $pdf->Output("productos_proveedor_{$idProveedor}.pdf", 'I');
 
 } catch (PDOException $e) {

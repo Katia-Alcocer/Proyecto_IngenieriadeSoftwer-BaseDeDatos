@@ -4,19 +4,19 @@ require_once '../tcpdf/tcpdf.php';
 
 $fecha = $_GET['fecha'] ?? date('Y-m-d');
 
-// Consultar las ventas
+
 $sql = "SELECT * FROM VistaVentasDiarias WHERE CAST(Fecha AS DATE) = ?";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$fecha]);
 $ventas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Agrupar por empleado
+
 $ventasPorEmpleado = [];
 foreach ($ventas as $venta) {
     $ventasPorEmpleado[$venta['Empleado']][] = $venta;
 }
 
-// Crear PDF
+
 $pdf = new TCPDF();
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Sistema de Ventas');
@@ -38,7 +38,6 @@ if (empty($ventas)) {
         $pdf->Cell(0, 8, 'Empleado: ' . $empleado, 0, 1);
         $pdf->SetFont('helvetica', '', 10);
 
-        // Encabezado de tabla
         $html = '
         <table border="1" cellpadding="4">
             <thead>
@@ -81,6 +80,6 @@ if (empty($ventas)) {
     }
 }
 
-// Descargar el PDF
+
 $pdf->Output('Ventas_' . $fecha . '.pdf', 'D'); // 'D' = descarga directa
 exit;

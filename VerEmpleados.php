@@ -59,7 +59,7 @@ try {
     <th>NSS</th>
     <th>Usuario</th>
     <th>Puesto</th>
-    <th>Editar</th> <!-- Nueva columna -->
+    <th>Editar</th> 
   </tr>
 </thead>
 <tbody>
@@ -88,12 +88,12 @@ try {
       <td><?= htmlspecialchars($emp['Usuario']) ?></td>
       <td><?= htmlspecialchars($emp['Puesto']) ?></td>
 
-      <!-- Celda del botón editar -->
+      
       <td class="text-center align-middle">
         <a href="modificar_empleado.php?id=<?= urlencode($emp['idEmpleado']) ?>" 
            class="btn btn-sm btn-primary" 
            title="Editar empleado">
-          <!-- Ícono lápiz SVG -->
+         
           <svg xmlns="http://www.w3.org/2000/svg" 
                width="16" height="16" fill="currentColor" 
                class="bi bi-pencil" viewBox="0 0 16 16">

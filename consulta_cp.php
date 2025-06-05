@@ -1,5 +1,5 @@
 <?php
-require_once '../conexion.php'; // Ajusta la ruta si es necesario
+require_once '../conexion.php'; 
 
 if (isset($_GET['cp'])) {
     $cp = $_GET['cp'];

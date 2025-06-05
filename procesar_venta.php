@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($idCliente && $idEmpleado) {
         try {
-            // Ejecutar el procedimiento con nombres correctos
+            
             $stmt = $pdo->prepare("
                 EXEC RealizarVentaSimplificada 
                     @p_idCliente = :p_idCliente, 

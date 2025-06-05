@@ -1,5 +1,5 @@
 <?php
-require_once '../conexion.php'; // Ajusta la ruta a tu archivo de conexión PDO
+require_once '../conexion.php'; 
 session_start();
 
 $usuarioInput = $_POST['usuario'] ?? '';

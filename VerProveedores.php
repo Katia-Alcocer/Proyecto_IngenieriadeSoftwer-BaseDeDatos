@@ -74,7 +74,7 @@ try {
       Salir
     </button>
 
-    <!-- Botón Registrar Nuevo Proveedor -->
+    
     <a href="AgregarProvedor.php" class="btn text-white px-4 py-2"
       style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); border: none; font-size: 1.1rem;">
       Registrar Nuevo Proveedor

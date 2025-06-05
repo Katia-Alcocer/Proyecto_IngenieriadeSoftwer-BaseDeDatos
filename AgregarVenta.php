@@ -1,8 +1,8 @@
 <?php
-// Incluye tu archivo de conexión si está separado
+
 require '../conexion.php'; 
 
-// Ya tienes $pdo disponible aquí
+
 
 try {
     $stmt = $pdo->query("SELECT idProducto, Nombre, PrecioVenta FROM Productos"); // Ajusta el nombre de tabla y campos según tu BD
@@ -57,12 +57,12 @@ try {
           </div>
         </div>
 
-        <!-- Contenedor productos + total -->
+        
         <div class="row">
           <div class="col-md-8">
             <div id="productosContainer">
               <h5>Productos en la venta</h5>
-              <!-- Se añaden aquí -->
+              
             </div>
             <button type="button" class="btn btn-success mt-3" id="agregarProductoBtn">
               Agregar Producto

@@ -1,17 +1,15 @@
 <?php
 session_start();
 
-// Conexión a la base de datos (PDO)
-require_once '../conexion.php'; // Asegúrate de que esta línea incluya el archivo con $pdo
 
-// Establecer variable de sesión para el empleado (si aplica)
-//$empleado_id = $_SESSION['id'] ?? 1;
-//$pdo->query("SET @empleado_id = $empleado_id");
+require_once '../conexion.php'; 
 
-// Fecha seleccionada
+
+
+
 $fechaSeleccionada = date('Y-m-d');
 
-// Verificar si el formulario fue enviado
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST["fecha"])) {
         $fechaSeleccionada = $_POST["fecha"];
@@ -27,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// Consultar las ventas del día desde la vista
+
 $ventas = [];
 $sql = "SELECT * FROM VistaVentasDiarias WHERE CAST(Fecha AS DATE) = ?";
 $stmt = $pdo->prepare($sql);

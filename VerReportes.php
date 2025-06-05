@@ -85,7 +85,7 @@
 
   <div class="menu-container">
     <a href="VerPedidos.php" class="menu-item">Pedidos</a>
-    <a href="VerModificaciones.php" class="menu-item">Productos no aptos</a>
+    <a href="ProductosNoAptos.php" class="menu-item">Productos no aptos</a>
     <a href="TablaProductoProvedor.php" class="menu-item">Productos por Provedor</a>
     <a href="VerEmpleados.php" class="menu-item">Productos Vendidos por Provedor</a>
     

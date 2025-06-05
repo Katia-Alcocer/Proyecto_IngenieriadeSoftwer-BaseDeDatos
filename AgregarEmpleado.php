@@ -102,16 +102,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               </div>
             </div>
 
-            <!-- Asentamientos -->
+         
             <div class="mb-3" id="asentamientosContainer" style="display:none;">
               <label for="asentamiento" class="form-label">Asentamiento</label>
               <select class="form-select" id="asentamiento" name="idAsentamiento" required></select>
             </div>
 
-            <!-- Campo oculto para enviar c_CP -->
+            
             <input type="hidden" name="c_CP" id="c_CP" />
 
-            <!-- Campos geográficos -->
+           
             <div class="row"> 
               <div class="col-md-4 mb-4"><label for="estado" class="form-label">Estado</label><input type="text" class="form-control" id="estado" disabled></div>
               <div class="col-md-4 mb-4"><label for="municipio" class="form-label">Municipio</label><input type="text" class="form-control" id="municipio" disabled></div>
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             document.getElementById('asentamientosContainer').style.display = 'block';
 
-            // Seleccionar el primero y actualizar datos
+           
             let first = asentamientos.options[0];
             document.getElementById('estado').value = first.dataset.estado;
             document.getElementById('municipio').value = first.dataset.municipio;

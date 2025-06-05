@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../conexion.php'; // Debe definir $pdo
+require_once '../conexion.php'; 
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['verificar'])) {
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['verificar'])) {
     <title>Recuperar Clave</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styleLogin.css"> <!-- Puedes adaptar aquí tu estilo -->
+    <link rel="stylesheet" href="styleLogin.css"> 
 </head>
 <body>
 <section class="h-100 gradient-form" style="background-color: #f5f5f5;">
